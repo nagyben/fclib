@@ -147,5 +147,9 @@ namespace fclib {
 			this.Filters = filters;
 			this.Name = name;
 		}
+
+		public List<System.IO.FileInfo> Execute() {
+			
+		}
 	}
 }
