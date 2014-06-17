@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.IO;
 
 namespace fclib {
 
@@ -66,10 +67,23 @@ namespace fclib {
 			Delete = 2
 		}
 		public Operation Instruction = Operation.Copy;			// move, copy or delete
-		public bool SearchSubdirectories = false;				/* Whether to check the subfolders of the parent directory.
-																 * Does not apply to the target directory because this is
-																 * ambiguous.
-																 */
+
+		// Whether to check the subfolders of the parent directory.
+		// Does not apply to the target directory because this is ambiguous.
+		private SearchOption _SearchSubdirectories;
+		public bool SearchSubdirectories {
+			get {
+				if (this._SearchSubdirectories == SearchOption.AllDirectories) { return true; } else { return false; }
+			}
+			set {
+				if (value == true) {
+					this._SearchSubdirectories = SearchOption.AllDirectories;
+				} else {
+					this._SearchSubdirectories=SearchOption.TopDirectoryOnly;
+				}
+			}
+		}
+																
 
 		/* CONSTRUCTORS */
 
@@ -148,8 +162,53 @@ namespace fclib {
 			this.Name = name;
 		}
 
-		public List<System.IO.FileInfo> Execute() {
-			
+		public List<RuleFile> Execute() {
+			// Returns a list of file descriptors which match the rule
+			/* Several steps take place here:
+			 * 1. First, every file in the directory is returned
+			 * 2. Each filename is checked against the filters (these are by definiton OR filters)
+			 * 3. For every filename which passes the filter, it is added to the return list as a new RuleFile object
+			 */
+
+			// Get all files in directory with the specified extensions
+		}
+
+		private List<FileInfo> ApplyFilters(List<FileInfo>) {
+			// Initialize return variable for this function
+			List<FileInfo> FileInfoList = new List<FileInfo>();
+		}
+
+		private List<FileInfo> GetFilesByExtension(string extension, string directory) {
+			// Initialize return variable for this function
+			List<FileInfo> FileInfoList = new List<FileInfo>();
+
+			// Create DirectoryInfo object
+			/* We can't use the static Directory class because it returns
+			 * an array of filenames which is not enough information
+			 * for our purposes
+			 */
+			DirectoryInfo DirectoryInfo = new DirectoryInfo(directory);
+
+			// Get all files with extension
+			FileInfo[] FileInfoArray = DirectoryInfo.GetFiles(extension, this._SearchSubdirectories);
+
+			// convert from array into list
+			foreach (FileInfo FI in FileInfoArray) {
+				FileInfoList.Add(FI);
+			}
+
+			return FileInfoList;
+		}
+
+		private List<FileInfo> GetFilesByMultipleExtensions(List<string> extensions, string directory) {
+			// Initialize return variable
+			List<FileInfo> FileInfoList = new List<FileInfo>();
+
+			foreach (string ext in extensions) {
+				FileInfoList.AddRange(GetFilesByExtension(ext, directory)) ;
+			}
+
+			return FileInfoList;
 		}
 	}
 }
