@@ -14,7 +14,7 @@ namespace fclib {
 		/* INTRODUCTION
 		 * The Rule class provides the instances which describe each file copying / moving / deleting rule
 		 */
-
+		
 		/* MEMBER VARIABLES */
 		private int _id;
 		public int ID {
@@ -170,12 +170,32 @@ namespace fclib {
 			 * 3. For every filename which passes the filter, it is added to the return list as a new RuleFile object
 			 */
 
-			// Get all files in directory with the specified extensions
+			// Initialize return variable for this function
+			List<RuleFile> FilteredRuleFileList = new List<RuleFile>(); 
+
+			// Get all files with the corresponding extensions
+			List<FileInfo> AllFiles = GetFilesByMultipleExtensions(this.Extensions, this.ParentDirectory);
+
+			// Pass the filelist through the filters
+			List<FileInfo> FilteredFileInfoList = ApplyFilters(AllFiles);
+
+			// Convert the filelist to a RuleFile list
+			foreach (FileInfo file in FilteredFileInfoList) {
+				FilteredRuleFileList.Add(new RuleFile(this, file));
+			}
+
+			return FilteredRuleFileList;
 		}
 
-		private List<FileInfo> ApplyFilters(List<FileInfo>) {
+		private List<FileInfo> ApplyFilters(List<FileInfo> files) {
 			// Initialize return variable for this function
 			List<FileInfo> FileInfoList = new List<FileInfo>();
+
+			foreach (string filter in this.Filters) {
+				FileInfoList.AddRange(files.Where(s => s.FullName.ToLower() == filter.ToLower()));		// TODO: Remember to explain this lambda expression
+			}
+
+			return FileInfoList;
 		}
 
 		private List<FileInfo> GetFilesByExtension(string extension, string directory) {
@@ -204,6 +224,7 @@ namespace fclib {
 			// Initialize return variable
 			List<FileInfo> FileInfoList = new List<FileInfo>();
 
+			// Get the files for each extensions
 			foreach (string ext in extensions) {
 				FileInfoList.AddRange(GetFilesByExtension(ext, directory)) ;
 			}
