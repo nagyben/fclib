@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace fclib {
-	class RuleFile {
+	public class RuleFile {
 
 		public string RuleName { get; private set; }
 		public FileInfo FileInfo { get; private set; }

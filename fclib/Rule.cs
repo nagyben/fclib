@@ -128,7 +128,7 @@ namespace fclib {
 		}
 
 		/* METHODS */
-		public string ToString() {
+		public override string ToString() {
 			string buffer = "ID: " + this.ID + "\n" +
 							"Name: " + this.Name + "\n" +
 							"ParentDirectory: " + this.ParentDirectory + "\n" +
@@ -171,7 +171,7 @@ namespace fclib {
 			 */
 
 			// Initialize return variable for this function
-			List<RuleFile> FilteredRuleFileList = new List<RuleFile>(); 
+			List<RuleFile> FilteredRuleFileList = new List<RuleFile>();
 
 			// Get all files with the corresponding extensions
 			List<FileInfo> AllFiles = GetFilesByMultipleExtensions(this.Extensions, this.ParentDirectory);
@@ -183,7 +183,6 @@ namespace fclib {
 			foreach (FileInfo file in FilteredFileInfoList) {
 				FilteredRuleFileList.Add(new RuleFile(this, file));
 			}
-
 			return FilteredRuleFileList;
 		}
 
