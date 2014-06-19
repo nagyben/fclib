@@ -3,19 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="RuleBuilder" Height="248" Width="567" ResizeMode="NoResize">
     <Grid>
-        <TextBox x:Name="txt_TargetDirectory" HorizontalAlignment="Left" Height="26" Margin="95,144,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="371"/>
+        
         <Button x:Name="btn_BrowseTargetDirectory" Content="Browse..." HorizontalAlignment="Left" Margin="471,144,0,0" VerticalAlignment="Top" Width="80" Height="26"/>
-        <TextBox x:Name="txt_ParentDirectory" Height="26" Margin="95,10,95,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top"/>
+        <TextBox x:Name="txt_ParentDirectory" Height="26" Margin="95,10,95,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
         <Button x:Name="btn_BrowseParentDirectory" Content="Browse..." HorizontalAlignment="Left" Margin="471,10,0,0" VerticalAlignment="Top" Width="80" Height="26"/>
         <Label Content="Any file in:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="66"/>
         <Label Content="where the filename contains..." HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="168"/>
-        <TextBox x:Name="txt_Filters" HorizontalAlignment="Left" Height="26" Margin="183,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="283" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="txt_Filters" HorizontalAlignment="Left" Height="26" Margin="183,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="283" Grid.ColumnSpan="2"/>
         <Label Content="and has the extension(s)..." HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="168"/>
-        <TextBox x:Name="txt_Extensions" HorizontalAlignment="Left" Height="26" Margin="183,72,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="283" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="txt_Extensions" HorizontalAlignment="Left" Height="26" Margin="183,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="283" Grid.ColumnSpan="2"/>
         <RadioButton x:Name="rd_Move" Content="move" HorizontalAlignment="Left" Margin="132,113,0,0" VerticalAlignment="Top"/>
         <RadioButton x:Name="rd_Copy" Content="copy" HorizontalAlignment="Left" Margin="222,113,0,0" VerticalAlignment="Top"/>
         <RadioButton x:Name="rd_Delete" Content="delete" HorizontalAlignment="Left" Margin="312,113,0,0" VerticalAlignment="Top"/>
         <Label Content="to..." HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Width="80"/>
+		<TextBox x:Name="txt_TargetDirectory" HorizontalAlignment="Left" Height="26" Margin="95,144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
         <Button x:Name="btn_OK" Content="OK" Margin="286,183,95,0" VerticalAlignment="Top" Height="26" IsDefault="True" Click="btn_OK_Click"/>
         <Button x:Name="btn_Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="95,183,0,0" VerticalAlignment="Top" Width="180" Height="26" IsCancel="True"/>
     </Grid>

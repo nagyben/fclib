@@ -62,9 +62,10 @@ namespace fclib {
 		}
 
 		public enum Operation {
-			Copy = 0,
-			Move = 1,
-			Delete = 2
+			None = 0,
+			Copy = 1,
+			Move = 2,
+			Delete = 3
 		}
 		public Operation Instruction = Operation.Copy;			// move, copy or delete
 
@@ -93,6 +94,8 @@ namespace fclib {
 					string targetdir,
 					List<string> extensions,
 					List<string> filters,
+					Operation instruction,
+					bool searchsubdir = false,
 					string name = "") {
 
 			// The checks should be done by the set methods as defined by the properties
@@ -101,6 +104,8 @@ namespace fclib {
 			this.TargetDirectory = targetdir;
 			this.Extensions = extensions;
 			this.Filters = filters;
+			this.Instruction = instruction;
+			this.SearchSubdirectories = searchsubdir;
 			this.Name = name;
 		}
 
@@ -229,6 +234,19 @@ namespace fclib {
 			}
 
 			return FileInfoList;
+		}
+
+		public bool IsValid() {
+			// Checks if the rule is valid
+
+			// Various checking logic to be implemented here
+			if (this.ParentDirectory == null || this.ParentDirectory == "") { return false; }
+			if (this.TargetDirectory == null || this.TargetDirectory == "") { return false; }
+			if (this.Extensions.Count() == 0) { return false; }
+			if (this.Instruction == Operation.None) { return false; }
+
+			// If above checks pass then rule is valid
+			return true;
 		}
 	}
 }
