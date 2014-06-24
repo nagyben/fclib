@@ -26,11 +26,11 @@ namespace fcui {
 			this.id = id;
 		}
 
-		public RuleBuilder(Rule rule, int id) {
+		public RuleBuilder(Rule rule) {
 			InitializeComponent();
 
 			this.CurrentRule = rule;
-			this.id = id;
+			this.id = rule.ID;
 
 			this.txt_Extensions.Text = String.Join(",", rule.Extensions);
 			this.txt_Filters.Text = String.Join(",", rule.Filters);
@@ -72,7 +72,7 @@ namespace fcui {
 				this.DialogResult = true;
 				this.Close();
 			} else {
-				MessageBox.Show("There are some errors in the rule parameters. Please check them again");
+				MessageBox.Show("There are some errors in the rule parameters. Please check them again", "Rule error", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 		}
 	}

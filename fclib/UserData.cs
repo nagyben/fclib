@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections.ObjectModel;
 
 namespace fclib {
 	/// <summary>
 	/// Provides helper functions to save user data
 	/// </summary>
 	public static class UserData {
-		public static void SaveRules(List<Rule> rulelist, string filepath) {
+		public static void SaveRules(ObservableCollection<Rule> rulelist, string filepath) {
 			Stream stream = File.Open(filepath, FileMode.Create);
 			BinaryFormatter bformatter = new BinaryFormatter();
 			
@@ -20,13 +21,13 @@ namespace fclib {
 			stream.Close();
 		}
 
-		public static List<Rule> LoadRules(string filepath) {
-			List<Rule> rulelist;
+		public static ObservableCollection<Rule> LoadRules(string filepath) {
+			ObservableCollection<Rule> rulelist;
 			try {
 				Stream stream = File.Open(filepath, FileMode.Open);
 				BinaryFormatter bformatter = new BinaryFormatter();
 
-				rulelist = (List<Rule>)bformatter.Deserialize(stream);
+				rulelist = (ObservableCollection<Rule>)bformatter.Deserialize(stream);
 			} catch (Exception) {
 				throw;
 			}
