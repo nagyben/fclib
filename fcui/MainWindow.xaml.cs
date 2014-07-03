@@ -24,17 +24,19 @@ namespace fcui {
 		private ObservableCollection<Rule> RuleList = new ObservableCollection<Rule>();
 		private ObservableCollection<RuleFile> FileList = new ObservableCollection<RuleFile>();
 
+		public const string RULE_FILE = "rules.dat";
+
 		public MainWindow() {
-			DataContext = this;
 			InitializeComponent();
 
 			try {
-				RuleList = UserData.LoadRules("rules.dat");
+				RuleList = UserData.LoadRules(RULE_FILE);
 			} catch (Exception e) {
 				MessageBox.Show(e.Message);
 			}
 
-			lv_RuleList.ItemsSource = RuleList;
+			// Set the topmost listview's DataContext to the RuleList collection
+			lv_RuleList.DataContext = RuleList;
 		}
 
 		private void btn_AddRule_Click(object sender, RoutedEventArgs e) {
@@ -46,7 +48,11 @@ namespace fcui {
 
 			// The result is stored in the RuleList
 			if ((bool)Builder.DialogResult == true) {
-				this.RuleList.Add(Builder.CurrentRule);
+				try {
+					this.RuleList.Add(Builder.CurrentRule);
+				} catch (Exception ex) {
+					MessageBox.Show(ex.Message);
+				}
 			}
 		}
 
@@ -64,9 +70,15 @@ namespace fcui {
 			}
 		}
 
+		[Obsolete]
 		private void MoveRuleUp(object sender, RoutedEventArgs e) {
 			Button b = sender as Button;
 			object CP = b.CommandParameter;
+		}
+
+		private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+			// Save user data
+			UserData.SaveRules(this.RuleList, RULE_FILE);
 		}
 	}
 }

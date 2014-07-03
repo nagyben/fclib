@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace fclib {
 
@@ -47,8 +48,11 @@ namespace fclib {
 		public string ParentDirectory {
 			get { return this._ParentDirectory; }
 			set {
-				// TODO: filepath logic
-				this._ParentDirectory = value;
+				if (!CheckFilePath(value)) {
+					throw new FormatException("File path may not contain the following characters: " + Path.GetInvalidPathChars().ToString());
+				} else {
+					this._ParentDirectory = value;
+				}
 			}
 		}
 
@@ -56,8 +60,11 @@ namespace fclib {
 		public string TargetDirectory {							// note that this does not apply when the rule is a
 			get { return this._TargetDirectory; }				// delete operation
 			set {
-				// TODO: filepath logic
-				this._TargetDirectory = value;
+				if (!CheckFilePath(value)) {
+					throw new FormatException("File path may not contain the following characters: " + Path.GetInvalidPathChars().ToString());
+				} else {
+					this._TargetDirectory = value;
+				}
 			}
 		}
 
@@ -84,7 +91,8 @@ namespace fclib {
 				}
 			}
 		}
-																
+
+		public bool Enabled = true;											
 
 		/* CONSTRUCTORS */
 
@@ -247,6 +255,12 @@ namespace fclib {
 
 			// If above checks pass then rule is valid
 			return true;
+		}
+
+		private bool CheckFilePath(string filepath) {
+			//TODO: fix this RegEx
+			Regex r = new Regex(@"^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+$");
+			return r.IsMatch(filepath);
 		}
 	}
 }

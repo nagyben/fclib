@@ -1,7 +1,9 @@
 ﻿<Window x:Class="fcui.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="File Copy Tool" Height="366" Width="1023" Background="White">
+		xmlns:local="clr-namespace:fcui"
+        Title="File Copy Tool" Height="366" Width="1023" Background="White"
+		Closing="Window_Closing">
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="45*" MinHeight="45"/>
@@ -15,28 +17,37 @@
 			<ColumnDefinition/>
 			<ColumnDefinition Width="116"/>
 		</Grid.ColumnDefinitions>
-		<ListView x:Name="lv_RuleList" Margin="10,10,9.8,4.8" Grid.RowSpan="3" IsSynchronizedWithCurrentItem="True">
+		<ListView x:Name="lv_RuleList" 
+				  ItemsSource="{Binding}" 
+				  Margin="4,10,15.8,4.8" 
+				  Grid.RowSpan="3" 
+				  IsSynchronizedWithCurrentItem="True">
+			<ListView.Resources>
+				<local:ExtensionConverter x:Key="ExtensionConverter"/>
+			</ListView.Resources>
 			<ListView.View>
 				<GridView>
 					<GridViewColumn Header="Enabled">
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
-								<CheckBox />
+								<CheckBox IsChecked="{Binding Enabled}"/>
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
 					<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
+					<GridViewColumn Header="Filters" DisplayMemberBinding="{Binding Filters}"/>
+					<GridViewColumn Header="Extensions" DisplayMemberBinding="{Binding Extensions}"/>
 					<GridViewColumn Header="Instruction" DisplayMemberBinding="{Binding Instruction}"/>
 					<GridViewColumn Header="From" DisplayMemberBinding="{Binding ParentDirectory}"/>
 					<GridViewColumn Header="To" DisplayMemberBinding="{Binding TargetDirectory}"/>
 					<GridViewColumn Header="Subdirectories?" DisplayMemberBinding="{Binding SearchSubdirectories}"/>
-					<GridViewColumn Header="Up">
+					<!--GridViewColumn Header="Up">
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
 								<Button Content="^" Click="MoveRuleUp" CommandParameter="{Binding}"/>
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
-					</GridViewColumn>
+					</GridViewColumn -->
 				</GridView>
 			</ListView.View>
 		</ListView>
