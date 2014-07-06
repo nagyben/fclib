@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:local="clr-namespace:fcui.Converters"
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
-        Title="File Copy Tool" Height="366" Width="1023" Background="White"
+        Title="File Copy Tool" Height="372" Width="1023" Background="White"
 		Closing="Window_Closing">
-	<Grid>
+	<Grid Margin="0,0,0,6">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="45*" MinHeight="45"/>
 			<RowDefinition Height="40*" MinHeight="40"/>
@@ -31,23 +31,16 @@
 					<GridViewColumn Header="Enabled">
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
-								<CheckBox IsChecked="{Binding Enabled, diag:PresentationTraceSources.TraceLevel=High}"/>
+								<CheckBox IsChecked="{Binding Enabled}"/>
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
 					<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
 					<GridViewColumn Header="Filters" DisplayMemberBinding="{Binding Filters, Converter={StaticResource ListToStringConverter}}"/>
-					<GridViewColumn Header="Extensions" DisplayMemberBinding="{Binding Extensions, Converter={StaticResource ListToStringConverter}, diag:PresentationTraceSources.TraceLevel=High}"/>
-					<GridViewColumn Header="Instruction" DisplayMemberBinding="{Binding Instruction, diag:PresentationTraceSources.TraceLevel=High}"/>
+					<GridViewColumn Header="Extensions" DisplayMemberBinding="{Binding Extensions, Converter={StaticResource ListToStringConverter}}"/>
+					<GridViewColumn Header="Instruction" DisplayMemberBinding="{Binding Instruction}"/>
 					<GridViewColumn Header="To" DisplayMemberBinding="{Binding TargetDirectory}"/>
 					<GridViewColumn Header="Subdirectories?" DisplayMemberBinding="{Binding SearchSubdirectories}"/>
-					<!--GridViewColumn Header="Up">
-						<GridViewColumn.CellTemplate>
-							<DataTemplate>
-								<Button Content="^" Click="MoveRuleUp" CommandParameter="{Binding}"/>
-							</DataTemplate>
-						</GridViewColumn.CellTemplate>
-					</GridViewColumn -->
 				</GridView>
 			</ListView.View>
 		</ListView>
@@ -57,7 +50,24 @@
 		<Button x:Name="btn_ModifyRule" Content="Modify rule..." Grid.Column="1" Margin="10.2,5.2,9.8,4.8" Grid.Row="2" Click="btn_ModifyRule_Click"/>
 		<Button x:Name="btn_FindFiles" Content="Find files" Grid.Column="1" Margin="10" Grid.Row="3" Click="btn_FindFiles_Click"/>
 		<Button x:Name="btn_CancelFindFiles" Content="Cancel" Grid.Column="1" Margin="10,5,10,10" Grid.Row="4" IsEnabled="False" Click="btn_CancelFindFiles_Click"/>
-		<ProgressBar x:Name="pb_FindFiles" Margin="10,5,10,10" Grid.Row="4"/>
+		<ProgressBar x:Name="pb_FindFiles" Margin="10,5,10,10" Grid.Row="4" Visibility="Hidden"/>
 		<TextBlock x:Name="txt_Progress" Text="{Binding ElementName=pb_FindFiles, Path=Value, StringFormat={}{0:0}%}" Grid.Row="4" Margin="10,5,10,10" HorizontalAlignment="Center" Width="16" VerticalAlignment="Center" Visibility="Hidden"/>
+		<ListView x:Name="lv_FileList"
+				  ItemsSource="{Binding}"
+				  Margin="10" Grid.Row="5"
+				  IsSynchronizedWithCurrentItem="True">
+			<!-- ListView.Resources>
+				<Style TargetType="{x:Type GridViewColumnHeader}">
+					<Setter Property="HorizontalContentAlignment" Value="Left" />
+				</Style>
+			</ -->
+			<ListView.View>
+				<GridView>
+					<GridViewColumn Header="File" Width="350" DisplayMemberBinding="{Binding FileInfo, diag:PresentationTraceSources.TraceLevel=High}"/>
+					<GridViewColumn Header="Instruction" DisplayMemberBinding="{Binding Instruction, diag:PresentationTraceSources.TraceLevel=High}"/>
+					<GridViewColumn Header="Destination" Width="Auto" DisplayMemberBinding="{Binding TargetDirectory, diag:PresentationTraceSources.TraceLevel=High}"/>
+				</GridView>
+			</ListView.View>
+		</ListView>
 	</Grid>
 </Window>

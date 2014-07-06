@@ -1,25 +1,47 @@
 ﻿<Window x:Name="RuleBuilder1" x:Class="fcui.RuleBuilder"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="RuleBuilder" Height="248" Width="567" ResizeMode="NoResize">
+        Title="RuleBuilder" Height="271" Width="567" ResizeMode="NoResize">
 	<Grid>
-
-		<Button x:Name="btn_BrowseTargetDirectory" Content="Browse..." HorizontalAlignment="Left" Margin="471,144,0,0" VerticalAlignment="Top" Width="80" Height="26"/>
 		<TextBox x:Name="txt_ParentDirectory" Height="26" Margin="95,10,95,0" TextWrapping="Wrap" VerticalAlignment="Top"/>
-		<Button x:Name="btn_BrowseParentDirectory" Content="Browse..." HorizontalAlignment="Left" Margin="471,10,0,0" VerticalAlignment="Top" Width="80" Height="26"/>
+		<Button x:Name="btn_BrowseParentDirectory" Content="Browse..." HorizontalAlignment="Left" Margin="471,10,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="btn_BrowseParentDirectory_Click"/>
+		<CheckBox x:Name="chk_IncludeSubdirectories" Content="include subdirectories" HorizontalAlignment="Left" Margin="95,41,0,0" VerticalAlignment="Top"/>
 		<Label Content="Any file in:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="66"/>
-		<Label Content="where the filename contains..." HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="168"/>
-		<TextBox x:Name="txt_Filters" HorizontalAlignment="Left" Height="26" Margin="183,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="283" Grid.ColumnSpan="2"/>
-		<Label Content="and has the extension(s)..." HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="168"/>
-		<TextBox x:Name="txt_Extensions" HorizontalAlignment="Left" Height="26" Margin="183,72,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="283" Grid.ColumnSpan="2"/>
-		<RadioButton x:Name="rd_Move" Content="move" HorizontalAlignment="Left" Margin="132,113,0,0" VerticalAlignment="Top"/>
-		<RadioButton x:Name="rd_Copy" Content="copy" HorizontalAlignment="Left" Margin="222,113,0,0" VerticalAlignment="Top"/>
-		<RadioButton x:Name="rd_Delete" Content="delete" HorizontalAlignment="Left" Margin="312,113,0,0" VerticalAlignment="Top"/>
-		<Label Content="to..." HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Width="80"/>
-		<TextBox x:Name="txt_TargetDirectory" HorizontalAlignment="Left" Height="26" Margin="95,144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
-		<Button x:Name="btn_OK" Content="OK" Margin="286,183,95,0" VerticalAlignment="Top" Height="26" IsDefault="True" Click="btn_OK_Click"/>
-		<Button x:Name="btn_Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="95,183,0,0" VerticalAlignment="Top" Width="180" Height="26" IsCancel="True"/>
-		<Image HorizontalAlignment="Left" Height="26" Margin="471,72,0,0" VerticalAlignment="Top" Width="26" Source="help-icon.png"/>
-		<Image HorizontalAlignment="Left" Height="26" Margin="471,41,0,0" VerticalAlignment="Top" Width="26" Source="help-icon.png"/>
+		<Label Content="where the filename contains..." HorizontalAlignment="Left" Margin="10,61,0,0" VerticalAlignment="Top" Width="168"/>
+		<TextBox x:Name="txt_Filters" HorizontalAlignment="Left" Height="26" Margin="183,61,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="283"/>
+		<Label Content="and has the extension(s)..." HorizontalAlignment="Left" Margin="10,93,0,0" VerticalAlignment="Top" Width="168"/>
+		<TextBox x:Name="txt_Extensions" HorizontalAlignment="Left" Height="26" Margin="183,93,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="283"/>
+		<RadioButton x:Name="rd_Move" Content="move" HorizontalAlignment="Left" Margin="132,135,0,0" VerticalAlignment="Top"/>
+		<RadioButton x:Name="rd_Copy" Content="copy" HorizontalAlignment="Left" Margin="222,134,0,0" VerticalAlignment="Top"/>
+		<RadioButton x:Name="rd_Delete" Content="delete" HorizontalAlignment="Left" Margin="312,134,0,0" VerticalAlignment="Top"/>
+		<Label Content="to..." HorizontalAlignment="Left" Margin="10,165,0,0" VerticalAlignment="Top" Width="80"/>
+		<TextBox x:Name="txt_TargetDirectory" HorizontalAlignment="Left" Height="26" Margin="95,165,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="371"/>
+		<Button x:Name="btn_BrowseTargetDirectory" Content="Browse..." HorizontalAlignment="Left" Margin="471,165,0,0" VerticalAlignment="Top" Width="80" Height="26" Click="btn_BrowseTargetDirectory_Click"/>
+		<Button x:Name="btn_OK" Content="OK" Margin="286,204,95,0" VerticalAlignment="Top" Height="26" IsDefault="True" Click="btn_OK_Click"/>
+		<Button x:Name="btn_Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="95,204,0,0" VerticalAlignment="Top" Width="180" Height="26" IsCancel="True"/>
+
+		<Image Name="FilterToolTip" HorizontalAlignment="Left" Height="26" Margin="471,62,0,0" VerticalAlignment="Top" Width="26" Source="help-icon.png" 
+			   ToolTipService.ShowDuration="20000"
+			   ToolTipService.InitialShowDelay="0" Cursor="Hand">
+			<Image.ToolTip>
+				<StackPanel>
+					<TextBlock FontWeight="Bold">Filename filters</TextBlock>
+					<TextBlock>Type them in as <Span FontStyle="Italic">filename</Span>. For multiple extensions, separate using a comma, e.g.</TextBlock>
+					<TextBlock FontStyle="Italic">important_document, tvshow name, herp.derp</TextBlock>
+					<TextBlock><LineBreak/>To grab all files in the directory, leave an asterisk (*) in the field.</TextBlock>
+				</StackPanel>
+			</Image.ToolTip>
+		</Image>
+		<Image Name="ExtensionToolTip" HorizontalAlignment="Left" Height="26" Margin="471,93,0,0" VerticalAlignment="Top" Width="26" Source="help-icon.png"
+			   ToolTipService.ShowDuration="20000"
+			   ToolTipService.InitialShowDelay="0" Cursor="Hand">
+			<Image.ToolTip>
+				<StackPanel>
+					<TextBlock FontWeight="Bold">Extension filters</TextBlock>
+					<TextBlock>Type them in as <Span FontStyle="Italic">*.jpg</Span>. For multiple extensions, separate using a comma, e.g.</TextBlock>
+					<TextBlock FontStyle="Italic">*.jpg, *.png, *.avi</TextBlock>
+				</StackPanel>
+			</Image.ToolTip>
+		</Image>
 	</Grid>
 </Window>

@@ -51,7 +51,7 @@ namespace fclib {
 			get { return this._ParentDirectory; }
 			set {
 				if (!CheckFilePath(value)) {
-					throw new FormatException("File path may not contain the following characters: " + Path.GetInvalidPathChars().ToString());
+					throw new FormatException("File path may not be empty or contain the following characters: " + String.Join("",Path.GetInvalidPathChars()));
 				} else {
 					this._ParentDirectory = value;
 				}
@@ -63,7 +63,7 @@ namespace fclib {
 			get { return this._TargetDirectory; }				// delete operation
 			set {
 				if (!CheckFilePath(value)) {
-					throw new FormatException("File path may not contain the following characters: " + Path.GetInvalidPathChars().ToString());
+					throw new FormatException("File path may not be empty or contain the following characters: " + String.Join("",Path.GetInvalidPathChars().ToString()));
 				} else {
 					this._TargetDirectory = value;
 				}
@@ -157,14 +157,6 @@ namespace fclib {
 			return buffer;
 		}
 
-		public void addExtension(string extension) {
-			this.Extensions.Add(extension);
-		}
-
-		public void addFilter(string filter) {
-			this.Filters.Add(filter);
-		}
-
 		public void Modify(int id,
 					string parentdir,
 					string targetdir,
@@ -201,6 +193,8 @@ namespace fclib {
 			foreach (FileInfo file in FilteredFileInfoList) {
 				FilteredRuleFileList.Add(new RuleFile(this, file));
 			}
+
+			FilteredRuleFileList = FilteredRuleFileList.Distinct().ToList();
 			return FilteredRuleFileList;
 		}
 
@@ -209,8 +203,16 @@ namespace fclib {
 			List<FileInfo> FileInfoList = new List<FileInfo>();
 
 			foreach (string filter in this.Filters) {
-				FileInfoList.AddRange(files.Where(s => s.FullName.ToLower() == filter.ToLower()));		// TODO: Remember to explain this lambda expression
+				// if the filter is "*" then add all files to the list
+				if (filter == "*") {
+					FileInfoList.AddRange(files);
+				} else {
+					FileInfoList.AddRange(files.Where(s => s.FullName.ToLower() == filter.ToLower()));		// TODO: Remember to explain this lambda expression
+				}
 			}
+
+			// remove any duplicates
+			FileInfoList = FileInfoList.Distinct().ToList();
 
 			return FileInfoList;
 		}
@@ -263,8 +265,8 @@ namespace fclib {
 		}
 
 		private bool CheckFilePath(string filepath) {
-			//TODO: fix this RegEx
-			Regex r = new Regex(@"^(?:[\w]\:|\\)(\\[a-z_\-\s0-9\.]+)+$");
+			
+			Regex r = new Regex(@"^(?:[\w]\:|\\)(\\[a-zA-Z_\-\s0-9\.]+)+$");
 			return r.IsMatch(filepath);
 		}
 	}

@@ -25,7 +25,7 @@ namespace fcui {
 	public partial class MainWindow : Window {
 		/* MEMBERS */
 		private volatile ObservableCollection<Rule> RuleList = new ObservableCollection<Rule>();
-		private ObservableCollection<RuleFile> FileList = new ObservableCollection<RuleFile>();
+		private volatile ObservableCollection<RuleFile> FileList = new ObservableCollection<RuleFile>();
 
 		public const string RULE_FILE = "rules.dat";
 
@@ -39,8 +39,11 @@ namespace fcui {
 			}
 
 			// Set the topmost listview's DataContext to the RuleList collection
-			this.lv_RuleList.DataContext = RuleList;
+			this.lv_RuleList.DataContext = this.RuleList;
 
+			// Set the bottom listview's DataContext to the FileList collection
+			this.lv_FileList.DataContext = this.FileList;
+			
 			// Set up BackgroundWorker handlers
 			BWorker.WorkerReportsProgress = true;
 			BWorker.WorkerSupportsCancellation = true;
@@ -131,7 +134,7 @@ namespace fcui {
 			// Enable buttons
 			UIModeNormal();
 			
-			FileList = dummy;
+			this.FileList = dummy;
 
 			return;
 		}
