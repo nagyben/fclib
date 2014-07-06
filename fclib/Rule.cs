@@ -35,6 +35,8 @@ namespace fclib {
 			set {
 				if (value == "" || value == null) {
 					_name = string.Join("|", this.Filters) + "[" + string.Join(",", this.Extensions) + "] from <" + this.ParentDirectory + "> to <" + this.TargetDirectory + ">";
+				} else {
+					_name = value;
 				}
 			}
 		}
@@ -74,7 +76,7 @@ namespace fclib {
 			Move = 2,
 			Delete = 3
 		}
-		public Operation Instruction = Operation.Copy;			// move, copy or delete
+		public Operation Instruction { get; set; }		// move, copy or delete
 
 		// Whether to check the subfolders of the parent directory.
 		// Does not apply to the target directory because this is ambiguous.
@@ -92,7 +94,7 @@ namespace fclib {
 			}
 		}
 
-		public bool Enabled = true;											
+		public bool Enabled { get; set; }										
 
 		/* CONSTRUCTORS */
 
@@ -102,7 +104,7 @@ namespace fclib {
 					string targetdir,
 					List<string> extensions,
 					List<string> filters,
-					Operation instruction,
+					Operation instruction = Operation.Copy,
 					bool searchsubdir = false,
 					string name = "") {
 
@@ -115,6 +117,7 @@ namespace fclib {
 			this.Instruction = instruction;
 			this.SearchSubdirectories = searchsubdir;
 			this.Name = name;
+			this.Enabled = true;
 		}
 
 		/* SERIALIZATION */
@@ -127,6 +130,7 @@ namespace fclib {
 			this.Name = (string)info.GetValue("Name", typeof(string));
 			this.Instruction = (Operation)info.GetValue("Instruction", typeof(Operation));
 			this.SearchSubdirectories = (bool)info.GetValue("Subdirectories", typeof(bool));
+			this.Enabled = (bool)info.GetValue("Enabled", typeof(bool));
 		}
 
 		public void GetObjectData(SerializationInfo info, StreamingContext context) {
@@ -138,6 +142,7 @@ namespace fclib {
 			info.AddValue("Filters", this.Filters);
 			info.AddValue("Instruction", this.Instruction);
 			info.AddValue("Subdirectories", this.SearchSubdirectories);
+			info.AddValue("Enabled", this.Enabled);
 		}
 
 		/* METHODS */

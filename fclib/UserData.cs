@@ -28,10 +28,17 @@ namespace fclib {
 				BinaryFormatter bformatter = new BinaryFormatter();
 
 				rulelist = (ObservableCollection<Rule>)bformatter.Deserialize(stream);
+
+				stream.Close();
+
 			} catch (Exception) {
 				throw;
 			}
 			return rulelist;
+		}
+
+		public static void DeleteRuleData(string filepath) {
+			throw new NotImplementedException();
 		}
 	}
 }
