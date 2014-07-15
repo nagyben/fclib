@@ -38,6 +38,9 @@ namespace fcui {
 				MessageBox.Show(e.Message);
 			}
 
+			//ObservableCollection<RuleFile> herpy = new ObservableCollection<RuleFile>(RuleList[0].Execute());
+			//FileList = herpy;
+
 			// Set the topmost listview's DataContext to the RuleList collection
 			this.lv_RuleList.DataContext = this.RuleList;
 
@@ -50,7 +53,7 @@ namespace fcui {
 			
 			BWorker.DoWork += BWorker_DoWork;
 			BWorker.ProgressChanged += BWorker_ProgressChanged;
-			BWorker.RunWorkerCompleted += BWorker_RunWorkerCompleted;
+			BWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BWorker_RunWorkerCompleted);
 		}
 
 		#region RULE_BUTTONS
@@ -68,6 +71,27 @@ namespace fcui {
 					this.RuleList.Add(Builder.CurrentRule);
 				} catch (Exception ex) {
 					MessageBox.Show(ex.Message);
+				}
+			}
+		}
+
+		private void btn_AddRule_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
+			// Rightclick enables creating a rule based on the current selected existing rule
+
+			if (this.lv_RuleList.SelectedIndex == -1) {
+				// If no Rule is selected then run simple rule addition
+				btn_AddRule_Click(sender, e);
+			} else {
+				int SelectedIndex = this.lv_RuleList.SelectedIndex;
+				RuleBuilder Builder = new RuleBuilder(this.RuleList[SelectedIndex]);
+
+				Builder.ShowDialog();
+				if ((bool)Builder.DialogResult == true) {
+					try {
+						this.RuleList.Add(Builder.CurrentRule);
+					} catch (Exception ex) {
+						MessageBox.Show(ex.Message);
+					}
 				}
 			}
 		}
@@ -134,7 +158,15 @@ namespace fcui {
 			// Enable buttons
 			UIModeNormal();
 			
-			this.FileList = dummy;
+			// ObservableCollection only implements the OnCollectionChanged event for the Add and Remove methods
+			// The best solution to-date is a foreach loop
+
+			foreach (RuleFile file in dummy) {
+				// Only add if FileList doesn't already contain the file
+				if (!FileList.Contains(file)) {
+					this.FileList.Add(file);
+				}
+			}
 
 			return;
 		}

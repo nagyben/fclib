@@ -35,7 +35,7 @@
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
-					<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
+					<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name, diag:PresentationTraceSources.TraceLevel=High}"/>
 					<GridViewColumn Header="Filters" DisplayMemberBinding="{Binding Filters, Converter={StaticResource ListToStringConverter}}"/>
 					<GridViewColumn Header="Extensions" DisplayMemberBinding="{Binding Extensions, Converter={StaticResource ListToStringConverter}}"/>
 					<GridViewColumn Header="Instruction" DisplayMemberBinding="{Binding Instruction}"/>
@@ -45,7 +45,13 @@
 			</ListView.View>
 		</ListView>
 
-		<Button x:Name="btn_AddRule" Content="Add rule..." Grid.Column="1" Margin="10.2,10,9.8,5.8" Click="btn_AddRule_Click"/>
+		<Button x:Name="btn_AddRule" Content="Add rule..." Grid.Column="1" Margin="10.2,10,9.8,5.8" Click="btn_AddRule_Click" MouseRightButtonUp="btn_AddRule_MouseRightButtonUp">
+			<Button.ToolTip>
+				<StackPanel>
+					<TextBlock>Right-click to create a new rule based on the currently selected rule</TextBlock>
+				</StackPanel>
+			</Button.ToolTip>
+		</Button>
 		<Button x:Name="btn_DeleteRule" Content="Delete rule" Grid.Column="1" Margin="10.2,4.2,9.8,4.8" Grid.Row="1" Click="btn_DeleteRule_Click"/>
 		<Button x:Name="btn_ModifyRule" Content="Modify rule..." Grid.Column="1" Margin="10.2,5.2,9.8,4.8" Grid.Row="2" Click="btn_ModifyRule_Click"/>
 		<Button x:Name="btn_FindFiles" Content="Find files" Grid.Column="1" Margin="10" Grid.Row="3" Click="btn_FindFiles_Click"/>
@@ -53,19 +59,20 @@
 		<ProgressBar x:Name="pb_FindFiles" Margin="10,5,10,10" Grid.Row="4" Visibility="Hidden"/>
 		<TextBlock x:Name="txt_Progress" Text="{Binding ElementName=pb_FindFiles, Path=Value, StringFormat={}{0:0}%}" Grid.Row="4" Margin="10,5,10,10" HorizontalAlignment="Center" Width="16" VerticalAlignment="Center" Visibility="Hidden"/>
 		<ListView x:Name="lv_FileList"
-				  ItemsSource="{Binding}"
+				  ItemsSource="{Binding diag:PresentationTraceSources.TraceLevel=High}"
 				  Margin="10" Grid.Row="5"
 				  IsSynchronizedWithCurrentItem="True">
-			<!-- ListView.Resources>
+			<ListView.Resources>
 				<Style TargetType="{x:Type GridViewColumnHeader}">
 					<Setter Property="HorizontalContentAlignment" Value="Left" />
 				</Style>
-			</ -->
+			</ListView.Resources>
 			<ListView.View>
 				<GridView>
 					<GridViewColumn Header="File" Width="350" DisplayMemberBinding="{Binding FileInfo, diag:PresentationTraceSources.TraceLevel=High}"/>
 					<GridViewColumn Header="Instruction" DisplayMemberBinding="{Binding Instruction, diag:PresentationTraceSources.TraceLevel=High}"/>
 					<GridViewColumn Header="Destination" Width="Auto" DisplayMemberBinding="{Binding TargetDirectory, diag:PresentationTraceSources.TraceLevel=High}"/>
+					<GridViewColumn Header="Overwrite" DisplayMemberBinding="{Binding Overwrite}"/>
 				</GridView>
 			</ListView.View>
 		</ListView>

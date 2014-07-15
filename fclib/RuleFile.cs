@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 
 namespace fclib {
-	public class RuleFile {
+	public class RuleFile : IEquatable<RuleFile> {
 
 		public string RuleName { get; private set; }
 		public FileInfo FileInfo { get; private set; }
@@ -39,6 +39,24 @@ namespace fclib {
 				default:
 					break;
 			}
+		}
+		
+		public bool Equals(RuleFile other) {
+			/* WHAT DEFINES WHETHER TWO FILES ARE THE SAME?
+			 * 
+			 * Some logic needs to be established to mimic what criteria the user would consider
+			 * when comparing two files.
+			 * 
+			 * CRITERIA FOR DIFFERENTIATION (list may change over time):
+			 * - Filename (NOT fullpath)
+			 * - Size
+			 * - Time of last modification
+			 */
+			if (this.FileInfo.Name != other.FileInfo.Name) { return false; }
+			if (this.FileInfo.Length != other.FileInfo.Length) { return false; }
+			if (this.FileInfo.LastAccessTime != other.FileInfo.LastAccessTime) { return false; }
+
+			return true;
 		}
 	}
 }
