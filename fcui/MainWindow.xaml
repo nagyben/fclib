@@ -66,10 +66,11 @@
 				<Style TargetType="{x:Type GridViewColumnHeader}">
 					<Setter Property="HorizontalContentAlignment" Value="Left" />
 				</Style>
+				<local:FileInfoNameConverter x:Key="FileInfoNameConverter"/>
 			</ListView.Resources>
 			<ListView.View>
 				<GridView>
-					<GridViewColumn Header="File" Width="350" DisplayMemberBinding="{Binding FileInfo, diag:PresentationTraceSources.TraceLevel=High}"/>
+					<GridViewColumn Header="File" Width="350" DisplayMemberBinding="{Binding FileInfo, Converter={StaticResource FileInfoNameConverter}, diag:PresentationTraceSources.TraceLevel=High}"/>
 					<GridViewColumn Header="Instruction" DisplayMemberBinding="{Binding Instruction, diag:PresentationTraceSources.TraceLevel=High}"/>
 					<GridViewColumn Header="Destination" Width="Auto" DisplayMemberBinding="{Binding TargetDirectory, diag:PresentationTraceSources.TraceLevel=High}"/>
 					<GridViewColumn Header="Overwrite" DisplayMemberBinding="{Binding Overwrite}"/>
