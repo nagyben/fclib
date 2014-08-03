@@ -1,7 +1,7 @@
 ﻿<Window x:Class="fcui.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		xmlns:c="clr-namespace:fcui.Converters"
+		xmlns:local="clr-namespace:fcui.Converters"
 		xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
         Title="File Copy Tool" Height="372" Width="1023" Background="White"
 		Closing="Window_Closing">
@@ -18,13 +18,13 @@
 			<ColumnDefinition/>
 			<ColumnDefinition Width="116"/>
 		</Grid.ColumnDefinitions>
-		<ListView x:Name="lv_RuleList"
-				  ItemsSource="{Binding}"
+		<ListView x:Name="lv_RuleList" 
+				  ItemsSource="{Binding}" 
 				  Margin="10" 
 				  Grid.RowSpan="4" 
 				  IsSynchronizedWithCurrentItem="True">
 			<ListView.Resources>
-				<c:ListToStringConverter x:Key="ListToStringConverter"/>
+				<local:ListToStringConverter x:Key="ListToStringConverter"/>
 			</ListView.Resources>
 			<ListView.View>
 				<GridView>
@@ -35,8 +35,8 @@
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
-					<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"/>
-					<GridViewColumn Header="Filters" DisplayMemberBinding="{Binding Filters, Converter={StaticResource ListToStringConverter}, diag:PresentationTraceSources.TraceLevel=High}"/>
+					<GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name, diag:PresentationTraceSources.TraceLevel=High}"/>
+					<GridViewColumn Header="Filters" DisplayMemberBinding="{Binding Filters, Converter={StaticResource ListToStringConverter}}"/>
 					<GridViewColumn Header="Extensions" DisplayMemberBinding="{Binding Extensions, Converter={StaticResource ListToStringConverter}}"/>
 					<GridViewColumn Header="Instruction" DisplayMemberBinding="{Binding Instruction}"/>
 					<GridViewColumn Header="To" DisplayMemberBinding="{Binding TargetDirectory}"/>
@@ -45,7 +45,13 @@
 			</ListView.View>
 		</ListView>
 
-		<Button x:Name="btn_AddRule" Content="Add rule..." Grid.Column="1" Margin="10.2,10,9.8,5.8" Click="btn_AddRule_Click"/>
+		<Button x:Name="btn_AddRule" Content="Add rule..." Grid.Column="1" Margin="10.2,10,9.8,5.8" Click="btn_AddRule_Click" MouseRightButtonUp="btn_AddRule_MouseRightButtonUp">
+			<Button.ToolTip>
+				<StackPanel>
+					<TextBlock>Right-click to create a new rule based on the currently selected rule</TextBlock>
+				</StackPanel>
+			</Button.ToolTip>
+		</Button>
 		<Button x:Name="btn_DeleteRule" Content="Delete rule" Grid.Column="1" Margin="10.2,4.2,9.8,4.8" Grid.Row="1" Click="btn_DeleteRule_Click"/>
 		<Button x:Name="btn_ModifyRule" Content="Modify rule..." Grid.Column="1" Margin="10.2,5.2,9.8,4.8" Grid.Row="2" Click="btn_ModifyRule_Click"/>
 		<Button x:Name="btn_FindFiles" Content="Find files" Grid.Column="1" Margin="10" Grid.Row="3" Click="btn_FindFiles_Click"/>
@@ -56,16 +62,18 @@
 				  ItemsSource="{Binding diag:PresentationTraceSources.TraceLevel=High}"
 				  Margin="10" Grid.Row="5"
 				  IsSynchronizedWithCurrentItem="True">
-			<!-- ListView.Resources>
+			<ListView.Resources>
 				<Style TargetType="{x:Type GridViewColumnHeader}">
 					<Setter Property="HorizontalContentAlignment" Value="Left" />
 				</Style>
-			</ -->
+				<local:FileInfoNameConverter x:Key="FileInfoNameConverter"/>
+			</ListView.Resources>
 			<ListView.View>
 				<GridView>
-					<!--GridViewColumn Header="File" Width="350" DisplayMemberBinding="{Binding FileInfo, diag:PresentationTraceSources.TraceLevel=High}"/-->
+					<GridViewColumn Header="File" Width="350" DisplayMemberBinding="{Binding FileInfo, Converter={StaticResource FileInfoNameConverter}, diag:PresentationTraceSources.TraceLevel=High}"/>
 					<GridViewColumn Header="Instruction" DisplayMemberBinding="{Binding Instruction, diag:PresentationTraceSources.TraceLevel=High}"/>
 					<GridViewColumn Header="Destination" Width="Auto" DisplayMemberBinding="{Binding TargetDirectory, diag:PresentationTraceSources.TraceLevel=High}"/>
+					<GridViewColumn Header="Overwrite" DisplayMemberBinding="{Binding Overwrite}"/>
 				</GridView>
 			</ListView.View>
 		</ListView>

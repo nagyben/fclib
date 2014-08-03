@@ -38,6 +38,9 @@ namespace fcui {
 				MessageBox.Show(e.Message);
 			}
 
+			//ObservableCollection<RuleFile> herpy = new ObservableCollection<RuleFile>(RuleList[0].Execute());
+			//FileList = herpy;
+
 			// Set the topmost listview's DataContext to the RuleList collection
 			this.lv_RuleList.DataContext = this.RuleList;
 
@@ -45,12 +48,12 @@ namespace fcui {
 			this.lv_FileList.DataContext = this.FileList;
 			
 			// Set up BackgroundWorker handlers
-			BWorker.WorkerReportsProgress = true;
-			BWorker.WorkerSupportsCancellation = true;
+			Searcher.WorkerReportsProgress = true;
+			Searcher.WorkerSupportsCancellation = true;
 			
-			BWorker.DoWork += BWorker_DoWork;
-			BWorker.ProgressChanged += BWorker_ProgressChanged;
-			BWorker.RunWorkerCompleted += BWorker_RunWorkerCompleted;
+			Searcher.DoWork += Searcher_DoWork;
+			Searcher.ProgressChanged += Searcher_ProgressChanged;
+			Searcher.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Searcher_RunWorkerCompleted);
 		}
 
 		#region RULE_BUTTONS
@@ -68,6 +71,27 @@ namespace fcui {
 					this.RuleList.Add(Builder.CurrentRule);
 				} catch (Exception ex) {
 					MessageBox.Show(ex.Message);
+				}
+			}
+		}
+
+		private void btn_AddRule_MouseRightButtonUp(object sender, MouseButtonEventArgs e) {
+			// Rightclick enables creating a rule based on the current selected existing rule
+
+			if (this.lv_RuleList.SelectedIndex == -1) {
+				// If no Rule is selected then run simple rule addition
+				btn_AddRule_Click(sender, e);
+			} else {
+				int SelectedIndex = this.lv_RuleList.SelectedIndex;
+				RuleBuilder Builder = new RuleBuilder(this.RuleList[SelectedIndex]);
+
+				Builder.ShowDialog();
+				if ((bool)Builder.DialogResult == true) {
+					try {
+						this.RuleList.Add(Builder.CurrentRule);
+					} catch (Exception ex) {
+						MessageBox.Show(ex.Message);
+					}
 				}
 			}
 		}
@@ -93,10 +117,13 @@ namespace fcui {
 			UserData.SaveRules(this.RuleList, RULE_FILE);
 		}
 
-		/* BACKGROUNDWORKER */
-		private readonly BackgroundWorker BWorker = new BackgroundWorker();
+		/* BACKGROUNDWORKERS */
+		private readonly BackgroundWorker Searcher = new BackgroundWorker();
+		private readonly BackgroundWorker Copier = new BackgroundWorker();
 
-		private void BWorker_DoWork(object sender, DoWorkEventArgs e) {
+		#region SEARCHER_FUNCTIONS
+
+		private void Searcher_DoWork(object sender, DoWorkEventArgs e) {
 			// initialize return variable
 			List<RuleFile> result = new List<RuleFile>();
 
@@ -104,25 +131,25 @@ namespace fcui {
 				// check if cancel request has been set
 				if (e.Cancel == true) {
 					break;
-				}
+				} else {
 
-				// Calculate & report progress
-				int progress = RuleList.IndexOf(rule) / RuleList.Count * 100;
-				BWorker.ReportProgress(progress);
+					// Calculate progress
+					int progress = RuleList.IndexOf(rule) / RuleList.Count * 100;
+					Searcher.ReportProgress(progress);
 
-				// Execute rule
-				try {
-					result.AddRange(rule.Execute());
-				} catch (Exception ex) {
-					MessageBox.Show(ex.Message);
+					// Execute rule
+					try {
+						result.AddRange(rule.Execute());
+					} catch (Exception ex) {
+						MessageBox.Show(ex.Message);
+					}
 				}
-				
 			}
 			e.Result = result;
 			return;
 		}
 
-		private void BWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+		private void Searcher_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
 			// dummy variable
 			/* 
 			 * Has to be implemented this way because only the constructor of ObservableCollection can
@@ -134,12 +161,20 @@ namespace fcui {
 			// Enable buttons
 			UIModeNormal();
 			
-			this.FileList = dummy;
+			// ObservableCollection only implements the OnCollectionChanged event for the Add and Remove methods
+			// The best solution to-date is a foreach loop
+
+			foreach (RuleFile file in dummy) {
+				// Only add if FileList doesn't already contain the file
+				if (!FileList.Contains(file)) {
+					this.FileList.Add(file);
+				}
+			}
 
 			return;
 		}
 
-		private void BWorker_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+		private void Searcher_ProgressChanged(object sender, ProgressChangedEventArgs e) {
 			/* LOGIC EXPLANATION
 			 * 
 			 * This method controls the visibility / clickability of the
@@ -154,8 +189,44 @@ namespace fcui {
 
 				// update progressbar
 				this.pb_FindFiles.Value = e.ProgressPercentage;
+				
+			}
+
+		}
+
+		#endregion
+
+		#region COPIER_FUNCTIONS
+
+		private void Copier_DoWork(object sender, DoWorkEventArgs e) {
+			foreach (RuleFile file in this.FileList) {
+
+				// Check if cancel request is set
+				if (e.Cancel == true) {
+					// Cancel requested; break from loop
+					break;
+				} else {
+					try {
+						// execute RuleFile operation
+						file.Execute();
+					} catch (Exception ex) {
+						MessageBox.Show(ex.Message);
+					}
+				}
 			}
 		}
+
+		private void Copier_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
+
+		}
+
+		private void Copier_ProgressChanged(object sender, ProgressChangedEventArgs e) {
+
+		}
+
+		#endregion
+
+		#region UIMODES
 
 		private void UIModeFindingFiles() {
 			this.btn_FindFiles.IsEnabled = false;
@@ -171,13 +242,15 @@ namespace fcui {
 			this.txt_Progress.Visibility = System.Windows.Visibility.Hidden;
 		}
 
+		#endregion
+
 		private void btn_FindFiles_Click(object sender, RoutedEventArgs e) {
 			this.btn_FindFiles.IsEnabled = false;
-			BWorker.RunWorkerAsync();
+			Searcher.RunWorkerAsync();
 		}
 
 		private void btn_CancelFindFiles_Click(object sender, RoutedEventArgs e) {
-			BWorker.CancelAsync();
+			Searcher.CancelAsync();
 		}
 	}
 }

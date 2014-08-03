@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\FileInfoNameConverter.cs" />
     <Compile Include="Converters\ListToStringConverter.cs" />
     <Compile Include="Converters\OperationConverter.cs" />
     <Compile Include="RuleBuilder.xaml.cs">
