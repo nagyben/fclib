@@ -106,7 +106,7 @@ namespace fcui {
 					break;
 				}
 
-				// Calculate progress
+				// Calculate & report progress
 				int progress = RuleList.IndexOf(rule) / RuleList.Count * 100;
 				BWorker.ReportProgress(progress);
 
@@ -154,9 +154,7 @@ namespace fcui {
 
 				// update progressbar
 				this.pb_FindFiles.Value = e.ProgressPercentage;
-				
 			}
-
 		}
 
 		private void UIModeFindingFiles() {
